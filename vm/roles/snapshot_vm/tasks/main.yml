@@ -1,0 +1,26 @@
+- name: Snapshot
+  command: "ovftool --acceptAllEulas --noSSLVerify -n={{snap_name}} --powerOffSource -tt=ova vi://{{vCenter_username}}:{{vCenter_password}}@{{vCenter_hostname}}/{{datacenter_name}}/host/{{vCenter_cluster}}/Resources/{{image_name}} {{snap_path}}"
+  register: machine_snapshot
+  retries: 30
+
+- pause:
+    seconds: 60
+
+- name: start the VM server
+  vsphere_guest:
+    vcenter_hostname: "{{ vCenter_hostname }}"
+    username: "{{ vCenter_username }}"
+    password: "{{ vCenter_password }}"
+    guest: "{{ image_name }}"
+    validate_certs: "no"
+    state: "{{ item }}"
+  with_items:
+  - powered_on
+
+- name: Wait for server to restart
+  local_action:
+    module: wait_for
+    host: "{{ vm_ip }}"
+    port: 22
+    delay: 1
+    timeout: 300

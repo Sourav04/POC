@@ -1,0 +1,43 @@
+- name: Add group snort
+  group: name=snort gid=4000
+
+- name: Add user snort
+  user: name=snort uid=4000 home=/var/log/snort shell=/sbin/nologin comment=SNORT_IDS group=snort
+
+- name: create dynamic rule directory
+  file: path=/usr/local/lib/snort_dynamicrules state=directory
+
+- name: change directory permissions
+  file: dest={{ item }} owner=snort group=snort mode=0700 recurse=yes
+  with_items:
+    - /var/log/snort
+    - /etc/snort
+    - /usr/local/src/daq-{{ daq_ver }}
+    - /usr/local/src/snort-{{ solution_version }}
+    - /usr/local/src/snort_dynamicsrc
+    - /usr/local/lib/snort
+    - /usr/local/lib/snort_dynamicengine
+    - /usr/local/lib/snort_dynamicpreprocessor
+    - /usr/local/lib/pkgconfig
+    - /usr/local/lib/snort_dynamicrules
+
+- name: change file permissions
+  file: dest={{ item }} owner=snort group=snort mode=0700
+  with_items:
+    - /usr/local/bin/daq-modules-config
+    - /usr/local/bin/u2boat
+    - /usr/local/bin/u2spewfoo
+    - /etc/sysconfig/snort
+    - /etc/init.d/snort
+
+- name: Add service snort
+  command: "/usr/sbin/chkconfig --add snort"
+
+- name: create symbolic link
+  file: src=/usr/local/bin/snort dest=/usr/sbin/snort state=link
+
+- name: Start Snort service
+  service:
+    name: snort
+    state: started
+  ignore_errors: yes

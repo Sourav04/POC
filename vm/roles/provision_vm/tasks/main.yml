@@ -1,0 +1,91 @@
+---
+- name: Deploy an instance
+  vsphere_guest:
+    vcenter_hostname: "{{ vCenter_hostname }}" 
+    username: "{{ vCenter_username }}"
+    password: "{{ vCenter_password }}" 
+    guest: "{{ guest_name }}" 
+    from_template: "{{ from_template }}"
+    template_src: "{{ src_template_name }}" 
+    cluster: "{{ vCenter_cluster }}"
+    power_on_after_clone: "No"
+    resource_pool: "{{ resource_pool }}"
+    validate_certs: "{{ validate_certs }}"
+    vm_extra_config:
+      folder: null
+    esxi:
+      datacenter: "{{ datacenter_name }}" 
+      hostname: "{{ esxi_hostname }}"
+
+- name: Reconfigure an instance
+  vsphere_guest:
+    vcenter_hostname: "{{ vCenter_hostname }}" 
+    username: "{{ vCenter_username }}"
+    password: "{{ vCenter_password }}" 
+    guest: "{{ guest_name }}" 
+    state: reconfigured
+    vm_extra_config:
+      folder: null
+    vm_nic:
+      nic1:
+        type: vmxnet3
+        network: "{{ management_portgroup }}" 
+        network_type: standard
+      nic2:
+        type: vmxnet3
+        network: "{{ production_portgroup }}"
+        network_type: standard
+    esxi:
+      datacenter: "{{ datacenter_name }}" 
+      hostname: "{{ esxi_hostname }}"
+
+- name: start the VM server
+  vsphere_guest:
+    vcenter_hostname: "{{ vCenter_hostname }}" 
+    username: "{{ vCenter_username }}"
+    password: "{{ vCenter_password }}" 
+    guest: "{{ guest_name }}"
+    validate_certs: "{{ validate_certs }}"
+    state: "{{ item }}"
+  with_items:
+  - powered_on
+
+- pause:
+    seconds: 60 
+
+- name: load ip configuration script for static IP assigment
+  shell: cat roles/provision_vm/files/rhel.sh
+  register: user_data
+
+- name: Set static IP Management
+  local_action:
+    module: vmware_vm_shell
+    hostname: "{{ vCenter_hostname }}" 
+    username: "{{ vCenter_username }}"
+    password: "{{ vCenter_password }}" 
+    vm_id: "{{ guest_name }}"
+    datacenter: "{{ datacenter_name }}" 
+    vm_username: "{{ root_user }}"
+    vm_password: "{{ root_pass }}"
+    vm_shell: "{{ remote_vm_login_shell }}"
+    vm_shell_args: "{{ user_data.stdout }}"
+    vm_shell_cwd: "/tmp"
+
+- name: Wait for server to restart
+  local_action:
+    module: wait_for
+    host: "{{ vm_ip }}"
+    port: 22
+    delay: 1
+    timeout: 300
+
+- name: Create an output file with Current VM details for qualification
+  blockinfile:
+    create: yes
+    dest: '{{ dest_file_name }}.yaml'
+    block: |
+      {{ server }}:
+         IP: {{ vm_ip }}
+         ToolName: {{ tool_name }}
+         ProdIP: {{ vm_ip_prod }}
+         Platform: {{ platform }}

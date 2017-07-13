@@ -1,0 +1,6 @@
+- name: upload the images
+  shell: "ovftool --acceptAllEulas --noSSLVerify -ds='{{datastore_name}}' -n={{guest_name}} -dm=thin --net:'{{network1_src}}'='{{network1_target}}' --net:'{{network2_src}}'='{{network2_target}}' {{src_template_path}}/{{src_template_name}} vi://{{vCenter_username}}:{{vCenter_password}}@{{vCenter_hostname}}/{{datacenter_name}}/host/{{vCenter_cluster}}/{{vCenter_blade}}"
+  register: image_upload
+
+- pause:
+    seconds: 60

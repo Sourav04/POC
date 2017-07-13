@@ -1,0 +1,9 @@
+---
+solution_version: 2.9.9.0
+snort_url: http://10.114.59.87/downloads/turing_repo/snort/2.9.9.0/snort-2.9.9.0.tar.gz
+snort_rule_url: http://10.114.59.87/downloads/turing_repo/snort/2.9.9.0/snortrules-snapshot-2983.tar.gz
+snort_rule_tar: snortrules-snapshot-2983.tar.gz
+community_rule_url: http://10.114.59.87/downloads/turing_repo/snort/2.9.9.0/community-rules.tar.gz 
+community_rule_tar: community-rules.tar.gz
+daq_url: http://10.114.59.87/downloads/turing_repo/snort/2.9.9.0/daq-2.0.6.tar.gz
+daq_ver: 2.0.6

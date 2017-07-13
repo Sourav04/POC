@@ -1,0 +1,7 @@
+---
+- name: Uploading a image on openstack
+  hosts: localhost
+  connection: local
+  roles:
+    - upload_vm
+

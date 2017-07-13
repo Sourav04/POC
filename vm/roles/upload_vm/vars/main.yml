@@ -1,0 +1,18 @@
+---
+#Authentication related credentials
+vCenter_hostname:
+vCenter_username:
+vCenter_password:
+vCenter_cluster:
+datacenter_name:
+datastore_name:
+vCenter_blade:
+
+##Specification of the VM to be deployed
+guest_name:
+src_template_name:
+src_template_path:
+network1_src:
+network1_target:
+network2_src:
+network2_target:

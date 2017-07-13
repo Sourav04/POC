@@ -1,0 +1,5 @@
+---
+solution_name: snort
+repo1: common-G03R01C00
+repo2: common-rhel7
+repo3: common-optional

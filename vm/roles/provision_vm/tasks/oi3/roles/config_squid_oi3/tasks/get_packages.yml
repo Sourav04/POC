@@ -1,0 +1,45 @@
+- name: updation of proxy
+  lineinfile:
+    dest=/etc/yum.conf
+    line="proxy={{ proxy_url }}"
+
+- name: Add required yum Repos into provisioned VM to install required
+  template: src={{ item }}.repo dest=/etc/yum.repos.d/{{ item }}.repo
+  with_items:
+    - "{{ repo1 }}"
+    - "{{ repo2 }}"
+    - "{{ repo3 }}"
+  register: task_result
+  until: task_result|success
+  retries: 5
+  delay: 109
+
+- name: yum | enable epel repository
+  shell: 'orange-yumconf -e "{{ item }}"'
+  with_items:
+    - "{{ repo1 }}"
+    - "{{ repo2 }}"
+    - "{{ repo3 }}"
+
+- name: yum-clean-metadata
+  command: yum clean metadata
+  args:
+    warn: no
+
+- name: yum makecache fast
+  shell: 'yum makecache fast'
+  ignore_errors: yes
+
+- name: Install list of packages
+  yum: name={{item}} state=installed
+  with_items:
+    - wget
+    - gcc
+    - gcc-c++
+    - make
+    - perl
+    - redhat-lsb-core
+    - net-snmp
+    - net-snmp-utils
+    - tcpdump
+

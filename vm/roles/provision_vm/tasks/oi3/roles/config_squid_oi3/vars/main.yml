@@ -1,0 +1,15 @@
+---
+solution_version: 3.5.24 
+repo1: common-G03R01C00
+repo2: common-rhel7
+repo3: common-optional
+#proxy_url: http://10.236.240.71:3128/
+proxy_url: http://10.171.52.162:443/
+perl_crypto_url: http://10.114.59.87/downloads/turing_repo/squid/3.5.24/perl-Crypt-OpenSSL-X509-1.803-4.el7.x86_64.rpm
+squid_url: http://10.114.59.87/downloads/turing_repo/squid/3.5.24/squid-3.5.24-5.el7.centos.x86_64.rpm
+squid_debug_url: http://10.114.59.87/downloads/turing_repo/squid/3.5.24/squid-debuginfo-3.5.24-5.el7.centos.x86_64.rpm
+squid_helper_url: http://10.114.59.87/downloads/turing_repo/squid/3.5.24/squid-helpers-3.5.24-5.el7.centos.x86_64.rpm
+perl_rpm_name: perl-Crypt-OpenSSL-X509-1.803-4.el7.x86_64.rpm
+squid_rpm_name: squid-3.5.24-5.el7.centos.x86_64.rpm
+squid_debug_rpm_name: squid-debuginfo-3.5.24-5.el7.centos.x86_64.rpm
+squid_helper_rpm_name: squid-helpers-3.5.24-5.el7.centos.x86_64.rpm

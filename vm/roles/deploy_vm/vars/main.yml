@@ -1,0 +1,31 @@
+---
+platform:
+tool_name:
+
+#Authentication related credentials
+vCenter_hostname:
+vCenter_username:
+vCenter_password:
+vCenter_cluster:
+datacenter_name:
+
+##Specification of the VM to be deployed
+guest_name:
+src_template_name:
+resource_pool:
+esxi_hostname:
+
+##Network related specifications
+management_portgroup:
+vm_ip:
+subnet_ip:
+gateway_ip:
+
+production_portgroup:
+vm_ip_prod:
+subnet_ip_prod:
+
+#Newly created VM login details
+remote_user:
+remote_user_pass:
+root_pass:

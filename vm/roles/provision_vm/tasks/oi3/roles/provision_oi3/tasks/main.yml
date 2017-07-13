@@ -1,0 +1,58 @@
+---
+- name: Load configuration script of static IP configuration
+  shell: cat roles/provision_oi3/files/{{ linux_distribution }}.sh
+  register: static_ip_script
+
+- name: get port ID based on the IP provided
+  shell: "neutron --os-cacert {{ cacert_path }} --os-auth-url {{os_auth_url}} --os-tenant-name {{os_tenant_name}} --os-username {{os_username}} --os-password {{os_password}} port-list --fixed_ips ip_address={{vm_ip}} | awk '/id/ {print $2}' | grep -A1 'id' | tail -n 1 ;"
+  register: result_port_id
+
+- name: Deploy an instance
+  os_server:
+    state: present
+    auth:
+      auth_url: "{{ os_auth_url }}"
+      username: "{{ os_username }}"
+      password: "{{ os_password }}"
+      tenant_name: "{{ os_tenant_name }}"
+    name: "{{ vm_name }}"
+    cacert: "{{ cacert_path }}"
+    image: "{{ os_image_name }}"
+    key_name: "{{ key_name }}"
+    timeout: "{{ timeout }}"
+    flavor: "{{ flavor }}"
+    auto_ip: "{{ auto_ip }}"
+    security_groups: "{{ security_groups }}"
+    nics:
+      - port-id: "{{ result_port_id.stdout }}"
+      - net-name: "{{private_net_name}}" 
+    userdata: "{{ static_ip_script.stdout }}"
+  register: result
+
+- name: Remove default security group if its is attached
+  shell: "nova --os-cacert {{ cacert_path }} --os-auth-url {{os_auth_url}} --os-tenant-name {{os_tenant_name}} --os-username {{os_username}} --os-password {{os_password}} remove-secgroup {{ vm_name }} default ;"
+  register: result_port_id
+  ignore_errors: yes
+
+- name: Wait for server to become accesible
+  local_action:
+    module: wait_for
+    host: "{{ vm_ip }}"
+    port: 22
+    delay: 1
+    timeout: 300
+
+- name: Production IP for Vm created
+  shell: "openstack --os-cacert {{ cacert_path }} --os-auth-url {{os_auth_url}} --os-tenant-name {{os_tenant_name}} --os-username {{os_username}} --os-password {{os_password}} server list --name {{vm_name}} | grep -i {{private_net_name}}  | awk -F '|' '{print $5}' | awk -F ' {{private_net_name}}' '{print $2}' |awk -F '=' '{print $2}' | awk -F ';' '{print $1}' " 
+  register: prod_ip
+ 
+- name: Create an output file with Current VM details for qualification
+  blockinfile:
+    create: yes
+    dest: '{{ dest_file_name }}.yaml'
+    block: |
+      {{ server }}:
+         IP: {{ vm_ip }}
+         ToolName: {{ tool_name }}
+         Platform: {{ platform }}
+         ProdIP:  {{prod_ip.stdout}}

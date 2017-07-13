@@ -1,0 +1,18 @@
+---
+- name: <Step 1> Install requires packages to install snort
+  include: get_packages.yml
+
+- name: <Step 2> Get and install daq from tar before snort installation
+  include: install_daq_tar.yml
+
+- name: <Step 3> Get and install snort from tar
+  include: install_snort_tar.yml
+
+- name: <Step 4> Get and install snort latest rules
+  include: copy_snort_rules.yml
+
+- name: <Step 5> Copy the configuration files such as snort.conf, snort init and snort sysconfig files
+  include: copy_config_files.yml
+ 
+- name: <Step 6> Assign the required permission
+  include: assign_permissions.yml

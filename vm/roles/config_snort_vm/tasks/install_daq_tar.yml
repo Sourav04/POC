@@ -1,0 +1,24 @@
+- name: gets DAQ tarball
+  get_url:
+    url={{ daq_url }}
+    dest=/usr/local/src
+  register: get_url_result
+  until: get_url_result|success
+  retries: 5
+  delay: 109
+
+- name: unarchive DAQ tarball
+  unarchive:
+    src="/usr/local/src/daq-{{ daq_ver }}.tar.gz"
+    dest="/usr/local/src/"
+    copy=no
+  when: get_url_result|changed
+
+- name: Running configure for DAQ
+  command: './configure chdir=/usr/local/src/daq-{{ daq_ver }}/'
+
+- name: Running "make" for DAQ
+  command: 'make chdir=/usr/local/src/daq-{{ daq_ver }}/'
+
+- name: Running "make install" for DAQ
+  command: 'make install chdir=/usr/local/src/daq-{{ daq_ver }}/'

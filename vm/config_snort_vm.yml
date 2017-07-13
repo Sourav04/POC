@@ -1,0 +1,27 @@
+---
+- name: Snort configuring on VMware
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+  - name: include vars
+    include_vars: "{{ item }}"
+    with_items:
+      - dut.yaml
+      - roles/provision_vm/vars/main.yml
+
+  - name: "Add hosts:"
+    add_host:
+      name: "{{ Server.IP }}"
+      ansible_user: "{{ remote_user }}"
+      ansible_ssh_pass: "{{ remote_user_pass }}"
+      ansible_become: true
+      ansible_become_method: su
+      ansible_become_pass: "{{ root_pass }}"
+      groups: just_created
+
+- name: Snort configuring on VMware 2nd step
+  hosts: just_created
+  gather_facts: false
+  roles:
+    - config_snort_vm

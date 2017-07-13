@@ -1,0 +1,7 @@
+---
+- name: Provisioning on OpenStack Layer
+  hosts: localhost
+  connection: local
+  roles:
+    - provision_oi3
+

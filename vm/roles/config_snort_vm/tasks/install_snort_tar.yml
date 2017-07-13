@@ -1,0 +1,28 @@
+- name: gets Snort tarball
+  get_url:
+    url={{ snort_url }}
+    dest=/usr/local/src
+  register: get_result
+  until: get_result|success
+  retries: 5
+  delay: 109
+
+- name: unarchive Snort tarball
+  unarchive:
+    src="/usr/local/src/snort-{{ solution_version }}.tar.gz"
+    dest="/usr/local/src/"
+    copy=no
+  when: get_result|changed
+
+- name: Running ./configure for Snort
+  shell: "export PATH=/usr/local/bin:$PATH; ./configure --enable-sourcefire chdir=/usr/local/src/snort-{{ solution_version }}/"
+
+- name: Running "make" for Snort
+  command: 'make chdir=/usr/local/src/snort-{{ solution_version }}/'
+
+- name: Running "make install" for Snort
+  command: 'make install chdir=/usr/local/src/snort-{{ solution_version }}/'
+
+- name: Running "ldconfig" for Snort
+  shell: "ldconfig –v /usr/local/lib"
+  ignore_errors: yes

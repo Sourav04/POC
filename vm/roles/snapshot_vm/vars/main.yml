@@ -1,0 +1,13 @@
+---
+#Authentication related credentials
+vCenter_hostname:
+vCenter_password:
+vCenter_username:
+vCenter_cluster:
+datacenter_name:
+
+##Specification of the VM to be deployed
+snap_name:
+image_name:
+snap_path:
+vm_ip:

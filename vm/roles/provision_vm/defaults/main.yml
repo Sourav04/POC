@@ -1,0 +1,22 @@
+#Post script that needs to be executed for Static IP configuration
+linux_distribution: rhel
+
+#Creation related default parameters
+from_template: yes
+validate_certs: no
+remote_vm_login_shell: '/bin/bash'
+
+##Network related specifications
+nic0: eth0
+nic0_path: /etc/sysconfig/network-scripts/ifcfg-eth0
+
+nic1: eth1
+nic1_path: /etc/sysconfig/network-scripts/ifcfg-eth1
+
+##OutputFilename
+tool_name: snort
+dest_file_name: dut
+server: Server
+
+#root user
+root_user: root

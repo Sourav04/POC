@@ -1,0 +1,41 @@
+- name: create snort directory
+  file: path=/etc/snort state=directory
+
+- name: copying snort conf files to created snort directory
+  shell: "cp -r /usr/local/src/snort-{{ solution_version }}/etc/* /etc/snort/"
+
+- name: gets Snortrules tarball
+  get_url:
+    url={{ snort_rule_url }}
+    dest=/usr/local/src/
+  register: get_result
+  until: get_result|success
+  retries: 5
+
+- name: unarchive SnortRules tarball
+  unarchive:
+    src="/usr/local/src/{{ snort_rule_tar }}"
+    dest="/etc/snort/"
+    copy=no
+  when: get_result|changed
+
+- name: copying snort rules
+  shell: "cp /etc/snort/etc/* /etc/snort/"
+
+- name: gets Community rules tarball
+  get_url:
+    url={{ community_rule_url }}
+    dest=/usr/local/src/
+  register: get_community_result
+  until: get_community_result|success
+  retries: 5
+
+- name: unarchive Community Rules tarball
+  unarchive:
+    src="/usr/local/src/{{ community_rule_tar }}"
+    dest="/etc/snort/rules/"
+    copy=no
+  when: get_community_result|changed
+
+- name: copying community rules
+  shell: "cp /etc/snort/rules/community-rules/community.rules /etc/snort/rules/"

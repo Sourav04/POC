@@ -1,0 +1,26 @@
+- name: copy snort configuration file
+  template: src=snort.conf dest=/etc/snort/snort.conf
+  register: task_result
+  until: task_result|success
+  retries: 5
+  delay: 109
+
+- name: copy snort sysconfig file
+  template: src=sysconfig_snort dest=/etc/sysconfig/snort
+  register: task_result
+  until: task_result|success
+  retries: 5
+  delay: 109
+
+- name: copy initialization file
+  template: src=init_snort dest=/etc/init.d/snort
+  register: task_result
+  until: task_result|success
+  retries: 5
+  delay: 109
+
+- name: create blank whitelist and balcklist files
+  file: path=/etc/snort/rules/{{ item }} state=touch
+  with_items:
+    - white_list.rules
+    - black_list.rules

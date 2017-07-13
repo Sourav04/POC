@@ -1,0 +1,24 @@
+---
+- name: Squid configuring on OI3.0 Layer
+  hosts: localhost
+  gather_facts: false
+  remote_user: osadmin
+  become: true
+  become_user: root
+  tasks:
+  - name: include vars
+#specify the file received from Provision for Ip and Tool Name
+    include_vars: dut.yaml
+
+  - name: "Add hosts:"
+    add_host: name="{{ Server.IP }}" groups=just_created
+
+- name: Squid configuring on OpenStack Layer-2 nd step
+  hosts: just_created
+  gather_facts: false
+  remote_user: osadmin
+  become: true
+  become_user: root
+  roles:
+    - config_squid_oi3
+

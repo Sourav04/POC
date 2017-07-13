@@ -1,0 +1,6 @@
+- name: upload the images
+  shell: "glance  --os-cacert {{cacert_path}} --os-auth-url {{os_auth_url}} --os-tenant-name {{os_tenant_name}} --os-username {{os_username}} --os-password {{os_password}} image-create --name {{upload_name}}  --file {{image_name}}.qcow2 --disk-format qcow2 --container-format bare"
+  register: image_upload
+
+- pause:
+    seconds: 60
