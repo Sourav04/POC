@@ -1,0 +1,5 @@
+[G03R01C00]
+name=Platon Linux RHEL7.1 $releasever - $basearch
+baseurl=http://aptplaton.si.francetelecom.fr/aptplaton/premium/G3R1/RPMS.G03R01C00/
+	http://aptplaton.itn.ftgroup/aptplaton/premium/G3R1/RPMS.G03R01C00/
+enabled=1

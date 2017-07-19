@@ -1,0 +1,16 @@
+- name: Snapshot
+  command: "nova --os-cacert {{cacert_path}} --os-auth-url {{os_auth_url}} --os-tenant-name {{os_tenant_name}} --os-username {{os_username}} --os-password {{os_password}} image-create {{vm_name}} {{snap_name}}"
+  register: machine_snapshot
+  retries: 30
+
+- pause:
+    seconds: 200
+
+- name: list the images
+  shell: "glance  --os-cacert {{cacert_path}} --os-auth-url {{os_auth_url}} --os-tenant-name {{os_tenant_name}} --os-username {{os_username}} --os-password {{os_password}} image-list | grep {{snap_name}} | awk '{print $2}'"
+  register: image_list
+
+- name: download the image
+  shell: "glance  --os-cacert {{cacert_path}} --os-auth-url {{os_auth_url}} --os-tenant-name {{os_tenant_name}} --os-username {{os_username}} --os-password {{os_password}} image-download  --file {{snap_name}}.qcow2 {{image_list.stdout}}"
+  register: image_download
+

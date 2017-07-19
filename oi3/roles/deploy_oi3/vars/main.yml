@@ -1,0 +1,40 @@
+---
+platform: 
+tool_name: 
+
+##Authentication related credentials
+os_username: 
+os_auth_url: 
+os_password: 
+os_tenant_name: 
+cacert_path: 
+
+##Specification of the VM to be deployed
+<<<<<<< HEAD
+vm_name: 
+key_name: 
+flavor: 
+security_groups: 
+private_net_name: 
+os_image_name: 
+=======
+vm_name:
+key_name:
+flavor:
+security_groups:
+private_net_name:
+os_image_name:
+>>>>>>> v3.5.24
+
+##Network related specifications
+vm_ip: 
+subnet_ip: 
+gateway_ip: 
+
+<<<<<<< HEAD
+upload_name: 
+image_name: 
+=======
+upload_name:
+image_name:
+>>>>>>> v3.5.24

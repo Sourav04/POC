@@ -1,0 +1,47 @@
+---
+- name: Load configuration script of static IP configuration
+  shell: cat roles/deploy_oi3/files/{{ linux_distribution }}.sh
+  register: static_ip_script
+
+- name: get port ID based on the IP provided
+  shell: "neutron --os-cacert {{ cacert_path }} --os-auth-url {{os_auth_url}} --os-tenant-name {{os_tenant_name}} --os-username {{os_username}} --os-password {{os_password}} port-list --fixed_ips ip_address={{vm_ip}} | awk '/id/ {print $2}' | grep -A1 'id' | tail -n 1 ;"
+  register: result_port_id
+
+- name: Deploy an instance
+  os_server:
+    state: present
+    auth:
+      auth_url: "{{ os_auth_url }}"
+      username: "{{ os_username }}"
+      password: "{{ os_password }}"
+      tenant_name: "{{ os_tenant_name }}"
+    name: "{{ vm_name }}"
+    cacert: "{{ cacert_path }}"
+    image: "{{ os_image_name }}"
+    key_name: "{{ key_name }}"
+    timeout: "{{ timeout }}"
+    flavor: "{{ flavor }}"
+    auto_ip: "{{ auto_ip }}"
+    security_groups: "{{ security_groups }}"
+    nics:
+      - port-id: "{{ result_port_id.stdout }}"
+      - net-name: "{{private_net_name}}" 
+    userdata: "{{ static_ip_script.stdout }}"
+  register: result
+
+- name: Wait for server to restart
+  local_action:
+    module: wait_for
+    host: "{{ vm_ip }}"
+    port: 22
+    delay: 1
+    timeout: 300
+
+- name: Create an output file with Current VM details for qualification
+  blockinfile:
+    create: yes
+    dest: '{{ dest_file_name }}.yaml'
+    block: |
+      {{ server }}:
+         IP: {{ vm_ip }}
+         ToolName: {{ tool_name }} 

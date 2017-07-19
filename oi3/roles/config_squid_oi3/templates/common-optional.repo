@@ -1,0 +1,5 @@
+[standard]
+name=YUM platon $releasever - $basearch
+baseurl=http://aptplaton.si.francetelecom.fr/aptplaton/standard/x86_64/rhas70/RPMS.server/
+	http://aptplaton.itn.ftgroup/aptplaton/standard/x86_64/rhas70/RPMS.server/
+enabled=1

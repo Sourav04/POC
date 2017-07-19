@@ -1,0 +1,14 @@
+#Post script that needs to be executed for Static IP configuration
+linux_distribution: rhel
+
+##Specification of the VM to be deployed
+timeout: 200
+auto_ip: no
+
+##Network related specifications
+nic0: eth0
+nic0_path: /etc/sysconfig/network-scripts/ifcfg-eth0
+
+##OutputFilename
+dest_file_name: dut
+server: Server

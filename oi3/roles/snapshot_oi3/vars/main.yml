@@ -1,0 +1,11 @@
+---
+##Authentication related credentials
+os_username:
+os_auth_url:
+os_password:
+os_tenant_name:
+cacert_path:
+
+##Specification of the VM to be deployed
+vm_name:
+snap_name:
