@@ -1,0 +1,69 @@
+{
+  "trigger": {
+    "schedule": {
+      "interval": "15m"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "search_type": "query_then_fetch",
+        "indices": [
+          "indices-*"
+        ],
+        "types": [],
+        "body": {
+          "size": 0,
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "match": "fa"
+                  }
+                },
+                {
+                  "match_phrase": {
+                    "message": "test1"
+                  }
+                }
+              ],
+              "filter": {
+                "range": {
+                  "@timestamp": {
+                    "from": "now-5m",
+                    "to": "now"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "compare": {
+      "ctx.payload.hits.total": {
+        "gte": 5
+      }
+    }
+  },
+  "actions": {
+    "notify-email": {
+      "email": {
+        "profile": "standard",
+        "to": [
+          "ccccxxx"
+        ],
+        "subject": "{{ctx.metadata.cluster}} RED ALERT: Uff",
+        "body": {
+          "text": "{{ctx.metadata.cluster}} fasfas"
+        }
+      }
+    }
+  },
+  "metadata": {
+    "cluster": "ELK"
+  }
+}
